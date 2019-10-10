@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package com.netflix.spinnaker.testing.scenarios.kubernetes
+package com.netflix.spinnaker.testing.scenarios
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.netflix.spinnaker.testing.ExecutionConfig
@@ -55,11 +55,12 @@ private data class CreateApplicationScenarioConfig(val application: String,
                                                    val instancePort: Long
 ){
   fun toJob(stack: String): MutableMap<String, Any> {
-    val app = emptyMap<String, Any>()
-    app["name"] = application
-    app["email"] = email
-    app["cloudProviders"] = cloudProviders
-    app["instancePort"] = 80
+    val app = mutableMapOf(
+        Pair("name", application),
+        Pair("email", email),
+        Pair("cloudProviders", cloudProviders),
+        Pair("instancePort", instancePort),
+    )
 
     val job = mutableMapOf(
       Pair("application", app),

@@ -19,6 +19,7 @@ import com.netflix.spinnaker.testing.api.SpinnakerClient
 import com.netflix.spinnaker.testing.api.Task
 import com.netflix.spinnaker.testing.api.TaskResult
 import com.netflix.spinnaker.testing.api.Pipeline
+import com.netflix.spinnaker.testing.api.PipelineStage
 import com.netflix.spinnaker.testing.scenarios.Scenario
 import com.netflix.spinnaker.testing.scenarios.ScenarioActivity
 
@@ -50,11 +51,11 @@ open class AtOnceScenarioRunner(
       } else if (activity.type == "pipeline") {
         val response = spinnakerClient.submitPipeline(
           Pipeline(
-            activity.job.pipelineName,
-            activity.job.application,
-            activity.job.limitConcurrent,
-            activity.job.keepWaitingPipelines,
-            activity.job.stages,
+            activity.job.get("pipelineName") as String,
+            activity.job.get("application") as String,
+            activity.job.get("limitConcurrent") as Boolean,
+            activity.job.get("keepWaitingPipelines") as Boolean,
+            activity.job.get("stages") as List<PipelineStage>
           )
         ).execute()
 
@@ -69,7 +70,7 @@ open class AtOnceScenarioRunner(
          */
         // pretend as a task
         // TODO
-        activity.taskResult = TaskResult()
+        activity.taskResult = TaskResult("", "", emptyList(), 0, 0, 0)
       }
     }
 
@@ -81,7 +82,7 @@ open class AtOnceScenarioRunner(
     val activitiesMissingResults = allActivities.values.flatten().filter { it.taskResult == null }
 
     activitiesMissingResults
-      .filter { it.type != "task" }
+      .filter { it.type == "task" }
       .filter { it.taskId != null }
       .forEach {
         val taskResult = spinnakerClient.getTask(it.taskId!!).execute().body()

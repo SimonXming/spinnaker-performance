@@ -36,7 +36,7 @@ interface SpinnakerClient {
 
   @Headers(authCookie)
   @POST("/pipelines")
-  fun submitPipeline(@Body pipeline: Pipeline): Call<SubmittedPipeline>
+  fun submitPipeline(@Body pipeline: Pipeline): Call<Void>
 
   @Headers(authCookie)
   @GET("/applications/{application}/serverGroups")

@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package com.netflix.spinnaker.testing.scenarios.kubernetes
+package com.netflix.spinnaker.testing.scenarios
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.netflix.spinnaker.testing.ExecutionConfig
