@@ -21,6 +21,7 @@ import com.netflix.spinnaker.testing.ExecutionConfig
 import com.netflix.spinnaker.testing.ScenarioConfig
 import com.netflix.spinnaker.testing.api.SpinnakerClient
 import com.netflix.spinnaker.testing.api.PipelineStage
+import com.netflix.spinnaker.testing.api.PipelineTrigger
 import com.netflix.spinnaker.testing.scenarios.Scenario
 import com.netflix.spinnaker.testing.scenarios.ScenarioActivity
 import java.util.*
@@ -56,7 +57,8 @@ private data class CreatePipelineScenarioConfig(val application: String,
                                                 val pipelineName: String,
                                                 val limitConcurrent: Boolean,
                                                 val keepWaitingPipelines: Boolean,
-                                                val stages: List<PipelineStage>
+                                                val stages: List<PipelineStage>,
+                                                val triggers: List<PipelineTrigger>
 ){
   fun toJob(stack: String): MutableMap<String, Any> {
     val job = mutableMapOf(
@@ -64,7 +66,8 @@ private data class CreatePipelineScenarioConfig(val application: String,
       Pair("pipelineName", pipelineName),
       Pair("limitConcurrent", false),
       Pair("keepWaitingPipelines", false),
-      Pair("stages", stages)
+      Pair("stages", stages),
+      Pair("triggers", triggers)
     )
 
     return job;

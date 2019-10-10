@@ -85,11 +85,11 @@ data class TaskVariable(val key: String, val value: Any?)
 
 data class PipelineStage(val name: String, val type: String, val waitTime: Long)
 
+data class PipelineTrigger(val enabled: Boolean, val type: String, val cronExpression: String)
+
 data class Pipeline(val name: String,
                     val application: String,
                     val limitConcurrent: Boolean,
                     val keepWaitingPipelines: Boolean,
-                    val stages: List<PipelineStage>)
-
-// TODO
-data class SubmittedPipeline(val ref: String)
+                    val stages: List<PipelineStage>,
+                    val triggers: List<PipelineTrigger>)

@@ -20,6 +20,7 @@ import com.netflix.spinnaker.testing.api.Task
 import com.netflix.spinnaker.testing.api.TaskResult
 import com.netflix.spinnaker.testing.api.Pipeline
 import com.netflix.spinnaker.testing.api.PipelineStage
+import com.netflix.spinnaker.testing.api.PipelineTrigger
 import com.netflix.spinnaker.testing.scenarios.Scenario
 import com.netflix.spinnaker.testing.scenarios.ScenarioActivity
 
@@ -55,19 +56,11 @@ open class AtOnceScenarioRunner(
             activity.job.get("application") as String,
             activity.job.get("limitConcurrent") as Boolean,
             activity.job.get("keepWaitingPipelines") as Boolean,
-            activity.job.get("stages") as List<PipelineStage>
+            activity.job.get("stages") as List<PipelineStage>,
+            activity.job.get("triggers") as List<PipelineTrigger>
           )
         ).execute()
 
-        // activity.taskId = response.body()?.ref?.replace("/tasks/", "")
-        /*
-        val id: String,
-        val status: String,
-        val variables: List<TaskVariable>,
-        val buildTime: Long,
-        val startTime: Long,
-        val endTime: Long
-         */
         // pretend as a task
         // TODO
         activity.taskResult = TaskResult("", "", emptyList(), 0, 0, 0)
