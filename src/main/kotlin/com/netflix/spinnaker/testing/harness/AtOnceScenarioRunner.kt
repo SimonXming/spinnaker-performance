@@ -17,6 +17,8 @@ package com.netflix.spinnaker.testing.harness
 
 import com.netflix.spinnaker.testing.api.SpinnakerClient
 import com.netflix.spinnaker.testing.api.Task
+import com.netflix.spinnaker.testing.api.TaskResult
+import com.netflix.spinnaker.testing.api.Pipeline
 import com.netflix.spinnaker.testing.scenarios.Scenario
 import com.netflix.spinnaker.testing.scenarios.ScenarioActivity
 
@@ -35,15 +37,40 @@ open class AtOnceScenarioRunner(
 
   override fun tick(secondsOffset: Int): Boolean {
     for (activity in allActivities.getValue(secondsOffset)) {
-      val response = spinnakerClient.submitTask(
-        Task(
-          arrayListOf(activity.job),
-          activity.application,
-          activity.description
-        )
-      ).execute()
+      if (activity.type == "task") {
+        val response = spinnakerClient.submitTask(
+          Task(
+            arrayListOf(activity.job),
+            activity.application,
+            activity.description
+          )
+        ).execute()
 
-      activity.taskId = response.body()?.ref?.replace("/tasks/", "")
+        activity.taskId = response.body()?.ref?.replace("/tasks/", "")
+      } else if (activity.type == "pipeline") {
+        val response = spinnakerClient.submitPipeline(
+          Pipeline(
+            activity.job.pipelineName,
+            activity.job.application,
+            activity.job.limitConcurrent,
+            activity.job.keepWaitingPipelines,
+            activity.job.stages,
+          )
+        ).execute()
+
+        // activity.taskId = response.body()?.ref?.replace("/tasks/", "")
+        /*
+        val id: String,
+        val status: String,
+        val variables: List<TaskVariable>,
+        val buildTime: Long,
+        val startTime: Long,
+        val endTime: Long
+         */
+        // pretend as a task
+        // TODO
+        activity.taskResult = TaskResult()
+      }
     }
 
     val maxSecondsOffset = allActivities.keys.max() ?: 0
@@ -54,6 +81,7 @@ open class AtOnceScenarioRunner(
     val activitiesMissingResults = allActivities.values.flatten().filter { it.taskResult == null }
 
     activitiesMissingResults
+      .filter { it.type != "task" }
       .filter { it.taskId != null }
       .forEach {
         val taskResult = spinnakerClient.getTask(it.taskId!!).execute().body()

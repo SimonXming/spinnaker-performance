@@ -27,7 +27,8 @@ data class ScenarioActivity(val secondsOffset : Int,
                             val job: Map<String, Any>,
                             val scenarioName: String,
                             val application: String,
-                            val description: String) {
+                            val description: String,
+                            val type: String = "task") {
   var taskResult : TaskResult? = null
   var taskId : String? = null
 }
