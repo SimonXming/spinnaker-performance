@@ -40,6 +40,7 @@ class ChartReportGenerator : ReportGenerator {
 
     val durationDataset = DefaultCategoryDataset()
     for (activity in activities) {
+      if (activity.type == "pipeline") continue
       try {
         durationDataset.addValue(
           activity.taskResult!!.getDuration(),
@@ -59,6 +60,7 @@ class ChartReportGenerator : ReportGenerator {
 
     val lagDataset = DefaultCategoryDataset()
     for (activity in activities) {
+      if (activity.type == "pipeline") continue
       lagDataset.addValue(
         activity.taskResult!!.getLag() * 1000,
         activity.scenarioName,

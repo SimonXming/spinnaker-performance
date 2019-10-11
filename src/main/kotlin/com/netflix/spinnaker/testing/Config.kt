@@ -26,6 +26,7 @@ import java.security.KeyStore
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
+import com.netflix.spinnaker.testing.api.interceptors.AddCookieInterceptor
 
 class Config {
   var spinnakerClient: OkHttpClientConfiguration = OkHttpClientConfiguration()
@@ -60,6 +61,15 @@ data class OkHttpClientConfiguration(var uri: String = "",
     var okHttpClient = OkHttpClient()
 
     fun init() {
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC)
+
+        this.okHttpClient = OkHttpClient.Builder()
+                .addInterceptor(AddCookieInterceptor())
+                .addInterceptor(loggingInterceptor)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .build()
+
         if (!keyStore.isNullOrEmpty()) {
             val keyStorePassword = if (!keyStorePassword.isNullOrEmpty()) {
                 keyStorePassword

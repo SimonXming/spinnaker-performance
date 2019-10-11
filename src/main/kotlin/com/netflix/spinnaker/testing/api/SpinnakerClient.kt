@@ -22,35 +22,26 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
-import retrofit2.http.Headers
-
-const val authCookie = "Cookie: SESSION=OTZiMGM4NDktYWZkZS00N2I5LWFhNDItZGMyMjFiMmQwYjVj"
 
 interface SpinnakerClient {
   @GET("/health")
   fun health(): Call<Map<String, Any>>
 
-  @Headers(authCookie)
   @POST("/tasks")
   fun submitTask(@Body task: Task): Call<SubmittedTask>
 
-  @Headers(authCookie)
   @POST("/pipelines")
   fun submitPipeline(@Body pipeline: Pipeline): Call<Void>
 
-  @Headers(authCookie)
   @GET("/applications/{application}/serverGroups")
   fun getServerGroupsForApplication(@Path("application") application: String): Call<List<ServerGroup>>
 
-  @Headers(authCookie)
   @GET("/applications/{application}/serverGroupManagers")
   fun getServerGroupManagersForApplication(@Path("application") application: String): Call<List<ServerGroupManager>>
 
-  @Headers(authCookie)
   @GET("/applications/{application}/tasks")
   fun getTasksForApplication(@Path("application") application: String): Call<List<TaskResult>>
 
-  @Headers(authCookie)
   @GET("/tasks/{taskId}")
   fun getTask(@Path("taskId") taskId: String): Call<TaskResult>
 }

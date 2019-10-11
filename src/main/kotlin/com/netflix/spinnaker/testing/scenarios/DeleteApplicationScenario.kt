@@ -24,10 +24,10 @@ import com.netflix.spinnaker.testing.scenarios.Scenario
 import com.netflix.spinnaker.testing.scenarios.ScenarioActivity
 import java.util.*
 
-class CreateApplicationScenario(val objectMapper: ObjectMapper,
+class DeleteApplicationScenario(val objectMapper: ObjectMapper,
                                 val spinnakerClient: SpinnakerClient,
                                 val scenarioConfig: ScenarioConfig) : Scenario {
-  private val config = objectMapper.convertValue(scenarioConfig.config, CreateApplicationScenarioConfig::class.java)
+  private val config = objectMapper.convertValue(scenarioConfig.config, DeleteApplicationScenarioConfig::class.java)
   private val executionConfig = objectMapper.convertValue(scenarioConfig.executionConfig, ExecutionConfig::class.java)
 
   val scenarioId = UUID.randomUUID().toString()
@@ -42,29 +42,25 @@ class CreateApplicationScenario(val objectMapper: ObjectMapper,
         job,
         scenarioConfig.name,
         config.application,
-        "Create Application (id: ${scenarioId.substring(scenarioId.length - 6)}, tick: ${it})"
+        "Delete Application (id: ${scenarioId.substring(scenarioId.length - 6)}, tick: ${it})"
       )
     }
   }
 
 }
 
-private data class CreateApplicationScenarioConfig(val application: String,
-                                                   val email: String,
-                                                   val cloudProviders: String,
-                                                   val instancePort: Long
+private data class DeleteApplicationScenarioConfig(val application: String,
+                                                   val cloudProviders: String
 ){
   fun toJob(stack: String): MutableMap<String, Any> {
     val app = mutableMapOf(
         Pair("name", application),
-        Pair("email", email),
-        Pair("cloudProviders", cloudProviders),
-        Pair("instancePort", instancePort)
+        Pair("cloudProviders", cloudProviders)
     )
 
     val job = mutableMapOf(
       Pair("application", app),
-      Pair("type", "createApplication")
+      Pair("type", "deleteApplication")
     )
 
     return job;
