@@ -1,0 +1,16 @@
+scenarioRunner: AtOnce
+spinnakerClient:
+  uri: {{ spinnakerClientUri }}
+scenarios:
+{% for index in range(replicates|int) -%}
+- name: delete-application-{{ index }}
+  type: deleteApplication
+  enabled: true
+  executionConfig:
+    total: 1
+  config:
+    application: mingx-test-{{ index }}
+    email: mingx@vmware.com
+    cloudProviders: kubernetes
+    instancePort: 80
+{% endfor -%}

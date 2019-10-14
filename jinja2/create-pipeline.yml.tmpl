@@ -1,0 +1,24 @@
+scenarioRunner: AtOnce
+spinnakerClient:
+  uri: {{ spinnakerClientUri }}
+scenarios:
+{% for index in range(replicates|int) -%}
+- name: create-pipeline-{{ index }}
+  type: createPipeline
+  enabled: true
+  executionConfig:
+    total: 1
+  config:
+    application: mingx-test-{{ index }}
+    pipelineName: mingx-test-{{ index }}-pipeline
+    limitConcurrent: false
+    keepWaitingPipelines: false
+    stages:
+    - name: "Wait"
+      type: "wait"
+      waitTime: 3
+    triggers:
+    - type: "cron"
+      enabled: true
+      cronExpression: "0 0/1 * 1/1 * ? *"
+{% endfor -%}

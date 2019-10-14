@@ -1,0 +1,59 @@
+scenarioRunner: AtOnce
+spinnakerClient:
+  uri: {{ spinnakerClientUri }}
+scenarios:
+{% for index in range(replicates|int) -%}
+- name: create-application-{{ index }}
+  type: createApplication
+  enabled: true
+  executionConfig:
+    total: 1
+  config:
+    application: mingx-test-{{ index }}
+    email: mingx@vmware.com
+    cloudProviders: kubernetes
+    instancePort: 80
+
+- name: create-application-manifest-{{ index }}
+  cloudProvider: kubernetes
+  type: createManifest
+  enabled: false
+  executionConfig:
+    total: 1
+  config:
+    application: mingx
+    account: scdc-staging-hygieia
+    moniker:
+      app: "mingx"
+      cluster: "deployment nginx-deployment"
+    manifests:
+    - apiVersion: apps/v1beta2
+      kind: Deployment
+      metadata:
+        name: nginx-deployment-{{ index }}
+        namespace: scdc1-staging-hygieia
+        labels:
+          app: nginx
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: nginx
+        template:
+          metadata:
+            labels:
+              app: nginx
+          spec:
+            containers:
+            - name: nginx
+              image: nginx:1.7.9
+              ports:
+                - containerPort: 80
+              resources:
+                limits:
+                  cpu: 64m
+                  memory: 64Mi
+                requests:
+                  cpu: 64m
+                  memory: 64Mi
+{% endfor -%}
